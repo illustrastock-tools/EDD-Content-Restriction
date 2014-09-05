@@ -137,7 +137,7 @@ function edd_cr_render_option_row( $key, $post ) {
     </td>
     <?php
 
-    do_action( 'edd_cr_metabox', $post->ID, $restricted_to );
+    do_action( 'edd_cr_metabox', $post->ID, $restricted_to, null );
     echo wp_nonce_field( 'edd-cr-nonce', 'edd-cr-nonce' );
 }
 add_action( 'edd_cr_render_option_row', 'edd_cr_render_option_row', 10, 3 );
