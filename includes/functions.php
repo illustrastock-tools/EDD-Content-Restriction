@@ -22,6 +22,7 @@ if( ! defined( 'ABSPATH' ) ) exit;
  * @return      array $return An array containing the status and optional message
  */
 function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = false ) {
+
     $has_access         = false;
     $restricted_count   = count( $restricted_to );
     $products           = array();
@@ -31,13 +32,9 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
         $user_id = get_current_user_id();
     }
 
-    // bbPress specific checks
-    if( class_exists( 'bbPress' ) ) {
-
-        // Moderators can see everything
-        if( current_user_can( 'moderate' ) ) {
-            $has_access = true;
-        }
+    // bbPress specific checks. Moderators can see everything
+    if( class_exists( 'bbPress' ) && current_user_can( 'moderate' ) ) {
+        $has_access = true;
     }
 
     // Admins have full access
@@ -46,18 +43,16 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
     }
 
     // The post author can always access
-    if( $post_id ) {
-        if( current_user_can( 'edit_post', $post_id ) ) {
-            $has_access = true;
-        }
+    if( $post_id && current_user_can( 'edit_post', $post_id ) ) {
+        $has_access = true;
     }
 
-    if( $restricted_to && $has_access == false ) {
+    if( $restricted_to && ! $has_access ) {
 
         foreach( $restricted_to as $item => $data ) {
 
             // The author of a download always has access
-            if( (int) get_post_field( 'post_author', $data['download'] ) === (int) $user_id ) {
+            if( (int) get_post_field( 'post_author', $data['download'] ) === (int) $user_id && is_user_logged_in() ) {
                 $has_access = true;
                 break;
             }
@@ -68,11 +63,12 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
                 break;
             } elseif( 'any' === $data['download'] ) {
                 $products[0] = __( 'any product', 'edd_cr' );
+                $has_access  = false;
+                break;
             }
 
             // Check for variable prices
-            if( $has_access == false ) {
-
+            if( ! $has_access ) {
                 if( edd_has_variable_prices( $data['download'] ) ) {
 
                     if( strtolower( $data['price_id'] ) !== 'all' && ! empty( $data['price_id'] ) ) {
@@ -135,6 +131,10 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
         if( isset( $message ) ) {
 
             $return['message'] = $message;
+
+        } else {
+
+            $return['message'] = __( 'This content is restricted to buyers.', 'edd_cr' );
 
         }
 
