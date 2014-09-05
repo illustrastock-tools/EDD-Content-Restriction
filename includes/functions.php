@@ -134,7 +134,7 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
 
         } else {
 
-            $return['message'] = __( 'This content is restricted to buyers.', 'edd_cr' )
+            $return['message'] = __( 'This content is restricted to buyers.', 'edd_cr' );
 
         }
 
