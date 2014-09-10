@@ -151,12 +151,46 @@ add_action( 'edd_cr_render_option_row', 'edd_cr_render_option_row', 10, 3 );
  * @return      void
  */
 function edd_cr_save_meta_data( $post_id ) {
-    if( ! isset( $_POST['edd_cr_download'] ) || ! is_array( $_POST['edd_cr_download'] ) ) return;
 
-    if( isset( $_POST['edd-cr-nonce'] ) && wp_verify_nonce( $_POST['edd-cr-nonce'], 'edd-cr-nonce' ) ) {
+    if( ! isset( $_POST['edd_cr_download'] ) || ! is_array( $_POST['edd_cr_download'] ) ) {
+
+        return;
+
+    }
+
+    if( ! isset( $_POST['edd-cr-nonce'] ) || ! wp_verify_nonce( $_POST['edd-cr-nonce'], 'edd-cr-nonce' ) ) {
+
+        return;
+
+    }
+
+    if( ! empty( $_POST['edd_cr_download'] ) ) {
+
         update_post_meta( $post_id, '_edd_cr_restricted_to', $_POST['edd_cr_download'] );
 
-        do_action( 'edd_cr_save_meta_data', $post_id, $_POST );
+        foreach( $_POST['edd_cr_download'] as $item ) {
+
+            if( 'any' !== $item['download'] ) {
+
+                $saved_ids = get_post_meta( $item['download'], '_edd_cr_protected_post' );
+
+                if( ! in_array( $post_id, $saved_ids ) ) {
+
+                    add_post_meta( $item['download'], '_edd_cr_protected_post', $post_id );
+
+                }
+
+            }
+
+        }
+
+    } else {
+
+        delete_post_meta( $post_id, '_edd_cr_restricted_to' );
+
     }
+
+    do_action( 'edd_cr_save_meta_data', $post_id, $_POST );
+
 }
 add_action( 'save_post', 'edd_cr_save_meta_data' );

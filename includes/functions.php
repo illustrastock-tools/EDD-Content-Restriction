@@ -312,40 +312,35 @@ function edd_cr_add_template_tags( $payment_id ) {
  * @param       int $payment_id The ID of this payment
  * @return      array $meta The list of accessible files
  */
-function edd_cr_get_restricted_pages( $payment_id ) {
-    // If $payment_id isn't an array, bail!
-    if( is_array( $payment_id ) ) {
-        $payment_id = $payment_id['id'];
+function edd_cr_get_restricted_pages( $payment_id = 0 ) {
+
+    if( empty( $payment_id ) ) {
+        return false;
     }
 
-    $files = edd_get_payment_meta_downloads( $payment_id );
 
-    $ids = wp_list_pluck( $files, 'id' );
-    $ids = array_unique( $ids );
+    $post_ids = array();
+    $files    = edd_get_payment_meta_downloads( $payment_id );
+    $ids      = array_unique( wp_list_pluck( $files, 'id' ) );
+
+    foreach( $ids as $download_id ) {
+
+        $meta = get_post_meta( $download_id, '_edd_cr_protected_post' );
+        if( $meta ) {
+            $post_ids = array_merge( $post_ids, $meta );
+        }
+
+    }
+
+    $post_ids = array_unique( array_map( 'absint', $post_ids ) );
 
     $args = array(
-        'post_type'             => 'any',
-        'meta_key'              => '_edd_cr_restricted_to',
-        'meta_value'            => $ids,
-        'meta_compare'          => 'IN',
-        'ignore_sticky_posts'   => true
+        'post_type' => 'any',
+        'nopaging'  => true,
+        'post__in'  => $post_ids
     );
 
-    $meta_std = new WP_Query( $args );
-    $meta_std = $meta_std->posts;
+    $query = new WP_Query( $args );
 
-    $args = array(
-        'post_type'             => 'any',
-        'meta_key'              => '_edd_cr_restricted_to_variable',
-        'meta_value'            => $ids,
-        'meta_compare'          => 'IN',
-        'ignore_sticky_posts'   => true
-    );
-
-    $meta_var = new WP_Query( $args );
-    $meta_var = $meta_var->posts;
-
-    $meta = array_merge( $meta_std, $meta_var );
-
-    return $meta;
+    return $query->posts;
 }
