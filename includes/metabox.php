@@ -178,11 +178,11 @@ function edd_cr_save_meta_data( $post_id ) {
             }
         }
 
-        update_post_meta( $post_id, '_edd_cr_restricted_to', $_POST['edd_cr_download'] );
+        $has_items = false;
 
         foreach( $_POST['edd_cr_download'] as $item ) {
 
-            if( 'any' !== $item['download'] ) {
+            if( 'any' !== $item['download'] && ! empty( $item['download'] ) ) {
 
                 $saved_ids = get_post_meta( $item['download'], '_edd_cr_protected_post' );
 
@@ -192,8 +192,24 @@ function edd_cr_save_meta_data( $post_id ) {
 
                 }
 
+                $has_items = true;
+
+            } else if( 'any' == $item['download'] ) {
+
+                $has_items = true;
+
             }
 
+        }
+
+        if( $has_items ) {
+
+            update_post_meta( $post_id, '_edd_cr_restricted_to', $_POST['edd_cr_download'] );
+    
+        } else {
+
+            delete_post_meta( $post_id, '_edd_cr_restricted_to' );
+        
         }
 
     } else {

@@ -60,16 +60,12 @@ function edd_cr_filter_bbp_topics_list( $has_topics, $query ) {
             $has_access     = edd_cr_user_can_access( $user_ID, $restricted_to );
 
             if( $has_access['status'] == false ) {
-                $return = false;
+                $has_topics = false;
             }
-        } else {
-            $return = $has_topics;
         }
-    } else {
-        $return = $query;
     }
 
-    return $return;
+    return $has_topics;
 }
 add_filter( 'bbp_has_topics', 'edd_cr_filter_bbp_topics_list', 10, 2 );
 
@@ -87,6 +83,8 @@ add_filter( 'bbp_has_topics', 'edd_cr_filter_bbp_topics_list', 10, 2 );
 function edd_cr_filter_replies( $content, $reply_id ) {
     global $user_ID, $post;
 
+    $return = $content;
+
     if( ! current_user_can( 'moderate' ) ) {
         $restricted_to    = edd_cr_is_restricted( bbp_get_topic_id() );
         $restricted_id    = bbp_get_topic_id();
@@ -99,12 +97,10 @@ function edd_cr_filter_replies( $content, $reply_id ) {
         $has_access = edd_cr_user_can_access( $user_ID, $restricted_to, $restricted_id );
 
         if( $has_access['status'] == false ) {
-            $return = $has_status['message'];
+            $return = $has_access['message'];
         } else {
             $return = $content;
         }
-    } else {
-        $return = $content;
     }
 
     return $return;
