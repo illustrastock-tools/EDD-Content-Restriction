@@ -199,3 +199,16 @@ function EDD_Content_Restriction_load() {
     }
 }
 add_action( 'plugins_loaded', 'EDD_Content_Restriction_load' );
+
+/**
+ * Install initial settings
+ *
+ * @since       2.0
+ * @return      void
+ */
+function eddcr_install() {
+
+    add_option( 'eddcr_version', EDD_CONTENT_RESTRICTION_VER, '', false );
+
+}
+register_activation_hook( __FILE__, 'eddcr_install' );
