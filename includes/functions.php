@@ -94,8 +94,7 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
                 } else {
 
                     $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . '</a>';
-
-                    if( edd_has_user_purchased( $user_id, $data['download'] ) ) {
+                    if( is_user_logged_in() && edd_has_user_purchased( $user_id, $data['download'] ) ) {
                         $has_access = true;
                     }
                 }
