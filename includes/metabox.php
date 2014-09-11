@@ -169,12 +169,18 @@ function edd_cr_save_meta_data( $post_id ) {
         // Grab the items this post was previously restricted to and remove related meta
         $previous_items = get_post_meta( $post_id, '_edd_cr_restricted_to', true );
 
-        if( $previous_items );
+        if( $previous_items ) {
+
             foreach( $previous_items as $item ) {
+
                  if( 'any' !== $item['download'] ) {
+
                     delete_post_meta( $item['download'], '_edd_cr_protected_post', $post_id );
+
                  }
+
             }
+
         }
 
         $has_items = false;
@@ -204,11 +210,11 @@ function edd_cr_save_meta_data( $post_id ) {
         if( $has_items ) {
 
             update_post_meta( $post_id, '_edd_cr_restricted_to', $_POST['edd_cr_download'] );
-    
+
         } else {
 
             delete_post_meta( $post_id, '_edd_cr_restricted_to' );
-        
+
         }
 
     } else {
