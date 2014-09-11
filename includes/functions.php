@@ -51,6 +51,10 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
 
         foreach( $restricted_to as $item => $data ) {
 
+            if( empty( $data['download'] ) ) {
+                $has_access = true;
+            }
+
             // The author of a download always has access
             if( (int) get_post_field( 'post_author', $data['download'] ) === (int) $user_id && is_user_logged_in() ) {
                 $has_access = true;
