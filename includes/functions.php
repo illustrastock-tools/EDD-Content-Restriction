@@ -73,6 +73,7 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
 
             // Check for variable prices
             if( ! $has_access ) {
+
                 if( edd_has_variable_prices( $data['download'] ) ) {
 
                     if( strtolower( $data['price_id'] ) !== 'all' && ! empty( $data['price_id'] ) ) {
