@@ -211,7 +211,7 @@ function edd_cr_filter_restricted_content( $content = '', $restricted = false, $
                 $has_access['message'] = $message;
             }
 
-            $content = $has_access['message'];
+            $content = '<div class="edd_cr_message ' . $class . '">' . $has_access['message'] . '</div>';
         }
     }
 
