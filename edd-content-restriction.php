@@ -215,6 +215,7 @@ add_action( 'plugins_loaded', 'EDD_Content_Restriction_load' );
  */
 function eddcr_install() {
 
+    EDD_Content_Restriction::instance();
     add_option( 'eddcr_version', EDD_CONTENT_RESTRICTION_VER, '', false );
 
 }
