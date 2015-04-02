@@ -101,6 +101,7 @@ function eddcr_upgrade_post_meta() {
 		// No more items found, finish up
 
 		update_option( 'eddcr_version', EDD_CONTENT_RESTRICTION_VER );
+		delete_option( 'edd_doing_upgrade' );
 
 		wp_redirect( admin_url() ); exit;
 	}
