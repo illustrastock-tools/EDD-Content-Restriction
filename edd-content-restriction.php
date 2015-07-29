@@ -6,7 +6,7 @@
  * Version:         2.0.8
  * Author:          Pippin Williamson and Daniel J Griffiths
  * Author URI:      https://easydigitaldownloads.com
- * Text Domain:     edd_cr
+ * Text Domain:     edd-cr
  *
  * @package         EDD\ContentRestriction
  */
